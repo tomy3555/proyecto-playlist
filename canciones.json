@@ -1,1 +1,8 @@
-[]
+[
+    {
+        "titulo": "We Will Rock You",
+        "artista": "Queen",
+        "genero": "Rock",
+        "estado_animo": null
+    }
+]

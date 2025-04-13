@@ -1,25 +1,6 @@
 from cancion import Cancion
 from utils import guardar_cancion, cargar_canciones, eliminar_cancion, vaciar_canciones
-import requests
-
-def buscar_canciones(query):
-    url = f"https://api.spotify.com/v1/search?q={query}&type=track&limit=5"
-    headers = {
-        "Authorization": "Bearer TU_TOKEN_DE_ACCESO"  # Asegúrate de agregar tu token de acceso de Spotify
-    }
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        data = response.json()
-        canciones = []
-        for item in data['tracks']['items']:
-            titulo = item['name']
-            artista = item['artists'][0]['name']
-            genero = "Desconocido"  # Puedes modificar esto si tienes más información sobre el género
-            canciones.append({"titulo": titulo, "artista": artista, "genero": genero})
-        return canciones
-    else:
-        print("Error al buscar canciones.")
-        return []
+from buscador_api import buscar_canciones, seleccionar_cancion
 
 def main():
     while True:
@@ -37,21 +18,12 @@ def main():
             busqueda = input("Escribe una canción o artista para buscar: ")
             resultados = buscar_canciones(busqueda)
 
-            print("\n🎶 Canciones encontradas:")
-            for idx, cancion in enumerate(resultados, start=1):
-                print(f"{idx}. {cancion['titulo']} - {cancion['artista']} ({cancion['genero']})")
-
-            seleccion = input("Número de canción a agregar (o enter para cancelar): ")
-
-            if seleccion:
-                try:
-                    seleccion = int(seleccion) - 1
-                    datos = resultados[seleccion]
-                    nueva_cancion = Cancion(datos["titulo"], datos["artista"], datos["genero"])
+            if resultados:
+                seleccion = seleccionar_cancion(resultados)
+                if seleccion:
+                    nueva_cancion = Cancion(seleccion["titulo"], seleccion["artista"], seleccion["genero"])
                     guardar_cancion(nueva_cancion)
                     print("\n✅ Canción guardada en canciones.json")
-                except (ValueError, IndexError):
-                    print("Selección inválida, por favor elige un número entre 1 y 5.")
         
         elif opcion == "2":
             # Mostrar canciones guardadas
