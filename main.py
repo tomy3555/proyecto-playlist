@@ -1,3 +1,4 @@
+from utils import guardar_cancion, cargar_canciones
 from cancion import Cancion
 import buscador_api
 
@@ -11,6 +12,7 @@ def main():
         nueva_cancion = Cancion(datos["titulo"], datos["artista"], datos["genero"])
         print("\n🎵 Canción añadida:")
         print(nueva_cancion)
+        guardar_cancion(nueva_cancion)
 
 if __name__ == "__main__":
     main()
