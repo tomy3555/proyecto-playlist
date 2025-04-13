@@ -1,6 +1,25 @@
 from cancion import Cancion
 from utils import guardar_cancion, cargar_canciones, eliminar_cancion, vaciar_canciones
-import buscador_api
+import requests
+
+def buscar_canciones(query):
+    url = f"https://api.spotify.com/v1/search?q={query}&type=track&limit=5"
+    headers = {
+        "Authorization": "Bearer TU_TOKEN_DE_ACCESO"  # Asegúrate de agregar tu token de acceso de Spotify
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        canciones = []
+        for item in data['tracks']['items']:
+            titulo = item['name']
+            artista = item['artists'][0]['name']
+            genero = "Desconocido"  # Puedes modificar esto si tienes más información sobre el género
+            canciones.append({"titulo": titulo, "artista": artista, "genero": genero})
+        return canciones
+    else:
+        print("Error al buscar canciones.")
+        return []
 
 def main():
     while True:
@@ -16,14 +35,7 @@ def main():
         if opcion == "1":
             # Buscar y agregar canción
             busqueda = input("Escribe una canción o artista para buscar: ")
-            # Aquí va tu lógica para buscar canciones (por ahora usamos una lista estática)
-            resultados = [
-                {"titulo": "Bohemian Rhapsody", "artista": "Queen", "genero": "Rock"},
-                {"titulo": "Another One Bites The Dust", "artista": "Queen", "genero": "Rock"},
-                {"titulo": "Don't Stop Me Now", "artista": "Queen", "genero": "Rock"},
-                {"titulo": "Killer Queen", "artista": "Queen", "genero": "Rock"},
-                {"titulo": "We Will Rock You", "artista": "Queen", "genero": "Rock"}
-            ]
+            resultados = buscar_canciones(busqueda)
 
             print("\n🎶 Canciones encontradas:")
             for idx, cancion in enumerate(resultados, start=1):
@@ -80,6 +92,7 @@ def main():
 
         else:
             print("Opción no válida. Por favor, selecciona una opción del menú.")
-
+            
+# Ejecutar el programa
 if __name__ == "__main__":
     main()
