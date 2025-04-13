@@ -1,11 +1,16 @@
 from cancion import Cancion
+import buscador_api
 
-# Crear algunas canciones
-cancion1 = Cancion("Bohemian Rhapsody", "Queen", "Rock", "Dramático")
-cancion2 = Cancion("Shape of You", "Ed Sheeran", "Pop", "Feliz")
-cancion3 = Cancion("Imagine", "John Lennon", "Rock", "Reflexivo")
+def main():
+    termino = input("Escribe una canción o artista para buscar: ")
+    resultados = buscador_api.buscar_canciones(termino)
 
-# Imprimir las canciones
-print(cancion1)
-print(cancion2)
-print(cancion3)
+    datos = buscador_api.seleccionar_cancion(resultados)
+
+    if datos:
+        nueva_cancion = Cancion(datos["titulo"], datos["artista"], datos["genero"])
+        print("\n🎵 Canción añadida:")
+        print(nueva_cancion)
+
+if __name__ == "__main__":
+    main()
