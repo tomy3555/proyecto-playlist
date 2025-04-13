@@ -3,7 +3,7 @@ import json
 class Cancion:
     lista_canciones = []
     
-    def __init__(self, titulo, artista, genero, estado_animo):
+    def __init__(self, titulo, artista, genero, estado_animo=None):
         self.titulo = titulo
         self.artista = artista
         self.genero = genero
